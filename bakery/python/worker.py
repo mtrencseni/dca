@@ -1,14 +1,11 @@
-import logging
-import sys, time, threading, requests
+import sys, time, threading, requests, logging
 from flask import Flask, jsonify, request
 
 logging.getLogger("werkzeug").setLevel(logging.ERROR)
 
-my_id       = int(sys.argv[2])  # 1 .. n
 num_loops   = int(sys.argv[1])  # e.g. 1_000
+my_id       = int(sys.argv[2])  # 1 .. n
 num_workers = int(sys.argv[3])  # e.g. 8
-PORT        = 7000 + my_id
-INC_URL     = "http://127.0.0.1:7000"
 
 app = Flask(__name__)
 choosing = 0
@@ -32,17 +29,11 @@ def endpoint_start():
     threading.Thread(target=run_worker, daemon=True).start()
     return jsonify(started=True)
 
-def safe_get(url):
-    try:
-        return requests.get(url, timeout=0.4).json()
-    except:
-        return {}
-
 def worker_ticket(i):
-    return safe_get(f"http://127.0.0.1:{7000+i}/ticket").get("ticket",0)
+    return requests.get(f"http://127.0.0.1:{7000+i}/ticket").json().get("ticket", 0)
 
 def worker_choose(i):
-    return safe_get(f"http://127.0.0.1:{7000+i}/choosing").get("choosing",0)
+    return requests.get(f"http://127.0.0.1:{7000+i}/choosing").json().get("choosing",0)
 
 def announce_intent():
     global choosing, ticket
@@ -72,19 +63,18 @@ def unlock():
     ticket = 0
 
 def critical_section():
-    curr = requests.get(f"{INC_URL}/get").json()["value"]     # get
-    requests.post(f"{INC_URL}/set", json={"value": curr + 1}) # set
-
+    curr = requests.get(f"http://127.0.0.1:7000/get").json()["value"]     # get
+    requests.post(f"http://127.0.0.1:7000/set", json={"value": curr + 1}) # set
 
 def run_worker():
     global done
     for i in range(num_loops):
-        # lock()
+        lock()
         critical_section()
-        # unlock()
+        unlock()
         #print(f"Worker {my_id} at {i}")
     done = True
     print(f"Worker {my_id} Done.", flush=True)
 
 if __name__ == "__main__":
-    app.run(port=PORT, threaded=False)
+    app.run(port=7000+my_id, threaded=False)

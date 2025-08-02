@@ -1,4 +1,4 @@
-import subprocess, sys, random, time, requests, os, signal
+import subprocess, sys, random, time, requests
 
 m = int(sys.argv[1]) if len(sys.argv) >= 2 else 1
 n = 3*m + 1

@@ -61,7 +61,7 @@ def OM(path):
     k = 1 + m - len(path)
     value = received_values[tuple(path)]
     if k == 0:
-        # print(f'node={id}: in round {k} for path={path} I am just returning the raw received message -> {value}')
+        # print(f'node={id}: in stage {k} for path={path} I am just returning the raw received message -> {value}')
         return value
     values = [value]
     # others = []
@@ -69,7 +69,7 @@ def OM(path):
         if i not in list(path) + [id]:
             # others.append(i)
             values.append(OM(list(path)+[i]))
-    # print(f'node={id}: in round {k} I received from path={path} value {values[0]}, my OM(k={k-1}) values from others ({others}) are {values[1:]} -> {majority(values)}')
+    # print(f'node={id}: in stage {k} I received from path={path} value {values[0]}, my OM(k={k-1}) values from others ({others}) are {values[1:]} -> {majority(values)}')
     return majority(values)
 
 def broadcast(path, value):
@@ -89,7 +89,6 @@ def order():
     path = list(msg["path"])
     value = msg["value"]
     k = 1 + m - len(path)
-    msg = {"path": path, "value": value}
     received_values[tuple(path)] = value
     if k > 0:
         broadcast(path + [id], other_value(value) if traitor else value)

@@ -60,7 +60,7 @@ def start():
     msg = request.get_json()
     if "round_id" not in msg:
         return "specify round_id", 400
-    if "round_id" in bcr:
+    if msg["round_id"] in bcr:
         return "round_id already seen", 400
     bcr[msg["round_id"]] = new_bcr(msg["round_id"])
     bcr[msg["round_id"]].start(msg["order"])
@@ -71,7 +71,7 @@ def status():
     msg = request.get_json()
     if "round_id" not in msg:
         return "specify round_id", 400
-    if "round_id" not in bcr:
+    if msg["round_id"] not in bcr:
         return "no such round_id seen", 400
     return jsonify(done=bcr[msg["round_id"]].is_done())
 
@@ -80,7 +80,7 @@ def decide():
     msg = request.get_json()
     if "round_id" not in msg:
         return "specify round_id", 400
-    if "round_id" not in bcr:
+    if msg["round_id"] not in bcr:
         return "no such round_id seen", 400
     return jsonify(value=bcr[msg["round_id"]].decide(timeout_default=msg.get("timeout_default", "")))
 

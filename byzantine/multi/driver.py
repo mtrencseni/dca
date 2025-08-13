@@ -25,7 +25,7 @@ time.sleep(1)
 for round_id in range(num_rounds):
     king_id = random.sample(range(n), 1)[0]
     print(f"\nROUND #{round_id}, node {king_id} is king")
-    # kick off message cascade by telling the commander to issue his order
+    # kick off message cascade by telling the king to issue his order
     activities = ["drink beer", "eat dinner", "sleep", "watch a movie", "go clubbing"]
     order = random.sample(activities, 1)[0]
     requests.post(f"http://127.0.0.1:{8000+king_id}/start", json={"round_id": round_id, "order": order})

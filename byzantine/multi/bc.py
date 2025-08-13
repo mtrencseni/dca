@@ -2,7 +2,7 @@ from collections import Counter, defaultdict
 from math import perm
 
 class ByzantineConsensus:
-    def __init__(self, *, node_id: int, n: int, m: int,
+    def __init__(self, node_id, n, m,
                  majority_func,     # majority_func(iterable[str]) -> str
                  send_func,         # send_func(target_id: int, msg: dict) -> None
                  next_value_func):  # next_value_func(v: str) -> str   
@@ -19,16 +19,16 @@ class ByzantineConsensus:
         # pre-compute expectation
         self._total_expected = sum(self._expected_messages(k) for k in range(m + 1))
 
-    def all_messages_received(self) -> bool:
+    def all_messages_received(self):
         return len(self.received_values) >= self._total_expected
 
-    def is_done(self) -> bool:
+    def is_done(self):
         return self._done
 
     def value(self):
         return self._value
 
-    def onmessage(self, msg: dict) -> None:
+    def onmessage(self, msg):
         if self._done:
             raise RuntimeError("node already finished this round")
         path  = tuple(msg["path"])

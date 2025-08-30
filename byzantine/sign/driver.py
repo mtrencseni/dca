@@ -1,7 +1,7 @@
 import subprocess, sys, random, time, requests
 
-m = int(sys.argv[1]) if len(sys.argv) >= 2 else 1
-n = int(sys.argv[2]) if len(sys.argv) >= 3 else m + 2
+n = int(sys.argv[1]) if len(sys.argv) >= 2 else 4
+m = int(sys.argv[2]) if len(sys.argv) >= 3 else n-2
 
 # randomly pick m traitors (could include commander 0)
 traitors = set(random.sample(range(n), m))

@@ -224,7 +224,7 @@ class PaxosLeaseProposer:
         # success: we now believe we have the lease until our local timer fires.
         with self._lock:
             self.state.lease_owner = True
-            print(f'I am the lease owner for {lease_seconds} seconds')
+            print(f'I am the lease owner')
         # we do NOT need to broadcast learn; other nodes can't reliably
         # know the remaining lease time due to network delay.
         return {

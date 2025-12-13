@@ -1,8 +1,9 @@
 import sys
+import json
 import requests
 import threading
 from types import SimpleNamespace
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 
 # start nodes:
 # python3 node.py 0 3
@@ -196,12 +197,15 @@ def learn():
 
 @app.route("/status", methods=["GET"])
 def status():
-    return jsonify({
+    payload = {
         "node_id": id,
         "proposer_state": proposer.state.__dict__,
         "acceptor_state": acceptor.state.__dict__,
         "learner_state": learner.state.__dict__,
-    })
+    }
+    return Response(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        mimetype="application/json"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=port, debug=False)
